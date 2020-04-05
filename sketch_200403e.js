@@ -1,36 +1,47 @@
-/*
- * @name Load and Display Image
- * @description Images can be loaded and displayed to the screen at their
- * actual size or any other size.
- * <p><em><span class="small"> To run this example locally, you will need an 
- * image file, and a running <a href="https://github.com/processing/p5.js/wiki/Local-server">
- * local server</a>.</span></em></p>
-
- */
-let player, playerleft, playerright, playerup, playerdown, x, y, prevx, prevy; // Declare variable 'img'.
+let player, playerleft, playerright, playerup, playerdown; 
 
 var img = [];
 var gx = [];
 var gy = [];
-let moveby = 32;
-let adjx = 0, adjy = -13;
-let groundx = 32, groundy = 32;
-var groundtype = 0;
+let right = 1, left = 2, up = 3, down = 4;
+
+var playr = {
+x:480,
+y:271,
+px:480,
+py:271,
+moveby:32,
+turnleft : function() {
+  player = playerleft;
+},
+turnright : function() {
+  player = playerright;
+},
+turnup : function() {
+  player = playerup;
+},
+turndown : function() {
+  player = playerdown;
+},
+};
+
+var ground = {
+w: 32,
+h: 32,
+type: 0,
+};
+
+
 
 function setup() {
   createCanvas(1440,813);
   
   for (let i = 0; i < 30; i++) {
-      if (groundtype = 0) {
-      img[i] = loadImage('assets/ground1.png');
-      groundtype = 1;
-      } else {
-      img[i] = loadImage('assets/ground2.png');
-      groundtype = 0;
-      } 
 
-    gx[i] = groundx*random(44);
-    gy[i] = groundy*random(24);
+      img[i] = loadImage('assets/ground1.png');
+
+    gx[i] = ground.w*random(44);
+    gy[i] = ground.h*random(24);
     
     
   }
@@ -40,9 +51,7 @@ function setup() {
   playerup = loadImage('assets/up.png');
   playerdown = loadImage('assets/down.png');
   background('#F5F5F7');
-  x = width/3; y = height/3;
-  player = playerright;
- 
+  playr.turnright();
 }
 
 function draw() {
@@ -51,26 +60,27 @@ function draw() {
   image(img[i], gx[i], gy[i]);
   }
   
-  image(player, x, y);
-  prevx = x;
-  prevy = y;
+  image(player, playr.x, playr.y);
+  playr.px = playr.x;
+  playr.py = playr.y;
+
 }
 
 function keyPressed() {
   if (keyCode === LEFT_ARROW) {
-    x = prevx - moveby;
-    player = playerleft;
+    playr.x = playr.px - playr.moveby;
+    playr.turnleft();
     
   } else if (keyCode === RIGHT_ARROW) {
-    x = prevx + moveby;
-    player = playerright;
+    playr.x = playr.px + playr.moveby;
+    playr.turnright();
 
   } else if (keyCode === UP_ARROW) {
-    y = prevy - moveby;
-    player = playerup;
+    playr.y = playr.py - playr.moveby;
+    playr.turnup();
     
   } else if (keyCode === DOWN_ARROW) {
-    y = prevy + moveby;
-    player = playerdown;
+    playr.y = playr.y + playr.moveby;
+    playr.turndown();
   } 
 }
